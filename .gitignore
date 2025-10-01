@@ -33,7 +33,5 @@ build/
 .vscode/
 
 # Arquivos de configuração locais (não subir para o GitHub)
-application.properties
-application.yml
 *.env
 
