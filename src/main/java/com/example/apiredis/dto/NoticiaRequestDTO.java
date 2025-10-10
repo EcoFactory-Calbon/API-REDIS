@@ -8,13 +8,13 @@ public class NoticiaRequestDTO {
     @NotNull(message = "Link da notícia é obrigatório")
     private String link;
     @NotNull(message = "Nome da notícia é obrigatório")
-    private String nome;
+    private String titulo;
     private Date data;
     private String descricao;
 
-    public NoticiaRequestDTO(String link, String nome, Date data, String descricao) {
+    public NoticiaRequestDTO(String link, String titulo, Date data, String descricao) {
         this.link = link;
-        this.nome = nome;
+        this.titulo = titulo;
         this.data = data;
         this.descricao = descricao;
     }
@@ -29,12 +29,16 @@ public class NoticiaRequestDTO {
         this.link = link;
     }
 
-    public @NotNull(message = "Nome da notícia é obrigatório") String getNome() {
-        return nome;
+    public @NotNull(message = "O titulo da notícia é obrigatório") String getNome() {
+        return titulo;
     }
 
-    public void setNome(@NotNull(message = "Nome da notícia é obrigatório") String nome) {
-        this.nome = nome;
+    public void setTitulo(@NotNull(message = "O titulo da notícia é obrigatório") String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getTitulo() {
+        return titulo;
     }
 
     public Date getData() {
@@ -52,4 +56,6 @@ public class NoticiaRequestDTO {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
+
 }

@@ -13,33 +13,40 @@ import java.util.concurrent.TimeUnit;
 public class NoticiaService {
 
     private final NoticiaRepository noticiaRepository;
-    private final RedisTemplate<String, Object> redisTemplate; // Para obter o TTL
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    // Injeção de dependência via construtor
+    private static final String NEWS_KEY_PREFIX = "news:";
+
     @Autowired
     public NoticiaService(NoticiaRepository noticiaRepository, RedisTemplate<String, Object> redisTemplate) {
         this.noticiaRepository = noticiaRepository;
         this.redisTemplate = redisTemplate;
     }
 
+    private String generateRedisKey(String link) {
+        return NEWS_KEY_PREFIX + link;
+    }
+
     public Noticia salvarOuAtualizar(Noticia noticia) {
+        noticia.setId(generateRedisKey(noticia.getLink()));
+
         return noticiaRepository.save(noticia);
     }
 
 
     public Noticia buscarPorLink(String link) {
-        return noticiaRepository.findById(link)
+        String redisKey = generateRedisKey(link);
+
+        return noticiaRepository.findById(redisKey)
                 .orElseThrow(() -> new ResourceNotFoundException("Notícia não encontrada com o link: " + link));
     }
 
     public Long getNoticiaTTL(String link) {
-        String redisKey = "noticia:" + link;
+        String redisKey = generateRedisKey(link);
 
-        // Retorna o tempo de expiração em segundos.
         Long ttl = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
 
-        // Retorna o TTL ou -1 (chave não existe ou não tem expiração)
-        return (ttl != null) ? ttl : -1L;
+        return (ttl != null) ? ttl : -2L;
     }
 
     public Iterable<Noticia> buscarTodas() {
@@ -47,9 +54,11 @@ public class NoticiaService {
     }
 
     public void deletarPorLink(String link) {
-        if (!noticiaRepository.existsById(link)) {
+        String redisKey = generateRedisKey(link);
+
+        if (!noticiaRepository.existsById(redisKey)) {
             throw new ResourceNotFoundException("Não foi possível deletar. Notícia não encontrada com o link: " + link);
         }
-        noticiaRepository.deleteById(link);
+        noticiaRepository.deleteById(redisKey);
     }
 }

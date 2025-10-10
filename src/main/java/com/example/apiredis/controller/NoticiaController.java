@@ -30,7 +30,7 @@ public class NoticiaController {
 
         Noticia noticia = new Noticia(
                 requestDTO.getLink(),
-                requestDTO.getNome(),
+                requestDTO.getTitulo(),
                 requestDTO.getData(),
                 requestDTO.getDescricao()
         );
@@ -42,13 +42,10 @@ public class NoticiaController {
 
     @GetMapping("/{link}")
     public ResponseEntity<NoticiaResponseDTO> buscarNoticia(@PathVariable String link) {
-        // O Service lança 404 (ResourceNotFoundException) se não encontrar.
         Noticia noticia = noticiaService.buscarPorLink(link);
 
-        // Busca o tempo de vida restante
         Long ttl = noticiaService.getNoticiaTTL(link);
 
-        // Retorna a notícia com o TTL
         NoticiaResponseDTO responseDTO = new NoticiaResponseDTO(noticia, ttl);
         return ResponseEntity.ok(responseDTO);
     }
@@ -57,7 +54,6 @@ public class NoticiaController {
     public ResponseEntity<List<NoticiaResponseDTO>> listarTodasNoticias() {
         Iterable<Noticia> noticias = noticiaService.buscarTodas();
 
-        // Converte para uma lista de DTOs, buscando o TTL para cada item
         List<NoticiaResponseDTO> responseList = StreamSupport.stream(noticias.spliterator(), false)
                 .map(noticia -> {
                     Long ttl = noticiaService.getNoticiaTTL(noticia.getLink());

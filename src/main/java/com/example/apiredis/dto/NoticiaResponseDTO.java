@@ -6,7 +6,7 @@ import java.util.Date;
 public class NoticiaResponseDTO {
 
     private String link;
-    private String nome;
+    private String titulo;
     private Date data;
     private String descricao;
     private Long ttlEmSegundos; // tempo de vida no Redis
@@ -14,7 +14,7 @@ public class NoticiaResponseDTO {
     // Construtor baseado no objeto Model
     public NoticiaResponseDTO(Noticia noticia) {
         this.link = noticia.getLink();
-        this.nome = noticia.getNome();
+        this.titulo = noticia.getTitulo();
         this.data = noticia.getData();
         this.descricao = noticia.getDescricao();
     }
@@ -34,12 +34,12 @@ public class NoticiaResponseDTO {
         this.link = link;
     }
 
-    public String getNome() {
-        return nome;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public Date getData() {
