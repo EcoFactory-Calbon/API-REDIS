@@ -1,0 +1,4 @@
+# substituir ID_COPIADO_AQUI pelo id copiado no passo anterior
+POST http://localhost:8080/users/1/savedPosts?postId=1759968617832
+
+GET http://localhost:8080/users/1/savedPosts

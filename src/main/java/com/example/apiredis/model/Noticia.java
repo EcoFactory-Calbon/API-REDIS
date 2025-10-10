@@ -5,27 +5,39 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.util.Date;
 
-@RedisHash(value = "noticia", timeToLive = 2592000L) // Cache por 30 dias
-public class Noticia {
-    // Atributos
-    @Id
-    private String link;
 
-    private String nome;
+@RedisHash(value = "noticia_hash")
+public class Noticia {
+
+    // O ID é a chave hash completa (ex: news:123456)
+    @Id
+    private String id;
+
+    private String link; // Este campo é usado para gerar o ID
+    private String titulo;
     private Date data;
-    private String descricao; // (opcional)
+    private String descricao;
 
     // Construtores
     public Noticia() {}
 
-    public Noticia(String link, String nome, Date data, String descricao) {
+    public Noticia(String link, String titulo, Date data, String descricao) {
         this.link = link;
-        this.nome = nome;
+        this.titulo = titulo;
         this.data = data;
         this.descricao = descricao;
     }
 
+
     // Getters e Setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getLink() {
         return link;
     }
@@ -34,12 +46,12 @@ public class Noticia {
         this.link = link;
     }
 
-    public String getNome() {
-        return nome;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setTitulo(String titulo) { // Corrigi o setNome para setTitulo
+        this.titulo = titulo;
     }
 
     public Date getData() {
@@ -60,6 +72,6 @@ public class Noticia {
 
     @Override
     public String toString() {
-        return "Noticia [link=" + link + ", nome=" + nome + ", data=" + data + ", descricao=" + descricao + "]";
+        return "Noticia [id=" + id + ", link=" + link + ", titulo=" + titulo + ", data=" + data + ", descricao=" + descricao + "]";
     }
 }
