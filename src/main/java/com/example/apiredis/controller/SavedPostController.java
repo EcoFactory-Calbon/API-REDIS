@@ -24,14 +24,16 @@ public class SavedPostController {
         if (!userId.equals(requestDTO.getUserId())) {
             return new ResponseEntity<>("O ID do usuário na URL não corresponde ao ID no corpo da requisição.", HttpStatus.BAD_REQUEST);
         }
-
-        savedPostService.savePost(requestDTO.getUserId(), requestDTO.getPostId());
+        // Chave completa do post
+        String postKey = "post:" + requestDTO.getPostId() + ":user:" + userId;
+        savedPostService.savePost(userId, postKey);
         return ResponseEntity.ok("Post salvo com sucesso!");
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> removePost(@PathVariable Long userId, @PathVariable Long postId) {
-        savedPostService.removePost(userId, postId);
+    public ResponseEntity<String> removePost(@PathVariable Long userId, @PathVariable String postId) {
+        String postKey = "post:" + postId + ":user:" + userId;
+        savedPostService.removePost(userId, postKey);
         return ResponseEntity.ok("Post removido com sucesso!");
     }
 

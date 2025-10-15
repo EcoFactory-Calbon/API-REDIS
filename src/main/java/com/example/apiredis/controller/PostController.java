@@ -20,39 +20,38 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        if (post.getId_post() == null || post.getId_user() == null) {
-            return new ResponseEntity("Campos 'id_post' e 'id_user' são obrigatórios.", HttpStatus.BAD_REQUEST);
+        try {
+            Post savedPost = postService.save(post);
+            return new ResponseEntity<>(savedPost, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-        Post savedPost = postService.save(post);
-        return new ResponseEntity<>(savedPost, HttpStatus.CREATED); // 201 Created
     }
 
     @GetMapping("findById/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable String id) {
         return postService.findById(id)
-                .map(ResponseEntity::ok) // 200 OK
-                .orElse(ResponseEntity.notFound().build()); // 404 Not Found
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postService.findAll();
-        return ResponseEntity.ok(posts); // 200 OK
+        return ResponseEntity.ok(postService.findAll());
     }
 
     @PutMapping("updatePostStatus/{id}")
     public ResponseEntity<Post> updatePostStatus(@PathVariable String id, @RequestBody Post postDetails) {
         return postService.updateStatus(id, postDetails)
-                .map(ResponseEntity::ok) // 200 OK
-                .orElse(ResponseEntity.notFound().build()); // 404 Not Found
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("deletePostById/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable String id) {
         if (postService.deleteById(id)) {
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.notFound().build(); // 404 Not Found
+        return ResponseEntity.notFound().build();
     }
 }

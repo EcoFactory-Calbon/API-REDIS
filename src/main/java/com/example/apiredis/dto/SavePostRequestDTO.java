@@ -3,21 +3,11 @@ package com.example.apiredis.dto;
 public class SavePostRequestDTO {
 
     private Long userId;
-    private Long postId;
+    private String postId;
 
-    public Long getUserId() {
-        return userId;
-    }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Long postId) {
-        this.postId = postId;
-    }
+    public String getPostId() { return postId; }
+    public void setPostId(String postId) { this.postId = postId; }
 }

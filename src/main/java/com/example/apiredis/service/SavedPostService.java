@@ -17,8 +17,6 @@ public class SavedPostService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final PostRepository postRepository;
     private static final String REDIS_SET_PREFIX = "saved_posts:";
-    private static final String POST_KEY_PREFIX = "post:";
-    private static final String USER_KEY_PREFIX = ":user:";
 
     public SavedPostService(RedisTemplate<String, Object> redisTemplate, PostRepository postRepository) {
         this.redisTemplate = redisTemplate;
@@ -29,32 +27,24 @@ public class SavedPostService {
         return REDIS_SET_PREFIX + userId;
     }
 
-    public void savePost(Long userId, Long postId) {
-        redisTemplate.opsForSet().add(getRedisSetKey(userId), postId.toString());
+    public void savePost(Long userId, String postKey) {
+        redisTemplate.opsForSet().add(getRedisSetKey(userId), postKey);
     }
 
-    public void removePost(Long userId, Long postId) {
-        redisTemplate.opsForSet().remove(getRedisSetKey(userId), postId.toString());
+    public void removePost(Long userId, String postKey) {
+        redisTemplate.opsForSet().remove(getRedisSetKey(userId), postKey);
     }
 
     public List<SavedPostResponseDTO> getSavedPosts(Long userId) {
         Set<Object> members = redisTemplate.opsForSet().members(getRedisSetKey(userId));
         if (members == null || members.isEmpty()) return List.of();
 
-        String userIdString = userId.toString();
+        Iterable<Post> posts = postRepository.findAllById(
+                members.stream().map(Object::toString).collect(Collectors.toSet())
+        );
 
-        // Constrói as chaves Redis completas para a busca
-        Set<String> postKeysToFind = members.stream()
-                .map(postId -> POST_KEY_PREFIX + postId.toString() + USER_KEY_PREFIX + userIdString)
-                .collect(Collectors.toSet());
-
-        Iterable<Post> postsIterable = postRepository.findAllById(postKeysToFind);
-
-        return StreamSupport.stream(postsIterable.spliterator(), false)
-                .map(post -> new SavedPostResponseDTO(
-                        post.getId_post(),
-                        post.getId_user(),
-                        post.getAtivo()))
+        return StreamSupport.stream(posts.spliterator(), false)
+                .map(p -> new SavedPostResponseDTO(p.getNoticia().getId(), p.getId_user(), p.getAtivo()))
                 .collect(Collectors.toList());
     }
 
