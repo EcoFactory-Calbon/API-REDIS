@@ -1,27 +1,31 @@
-# Dockerfile (multi-stage)
-# 1) build stage
+# ==========================
+# Etapa 1: Build da aplicação
+# ==========================
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
+
+# Copia o arquivo de configuração do Maven e o código-fonte
 COPY pom.xml .
 COPY src ./src
-RUN mvn -DskipTests package -DskipTests
 
-# 2) run stage
-FROM eclipse-temurin:17-jre
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-ENV PORT=8080
-EXPOSE 8080
-CMD ["sh", "-c", "java -Dserver.port=$PORT -jar app.jar"]
+# Compila o projeto e gera o .jar (sem rodar os testes)
+RUN mvn -DskipTests clean package
 
-# Etapa de runtime com JDK 21 slim
+# ==========================
+# Etapa 2: Runtime
+# ==========================
 FROM openjdk:21-jdk-slim
 WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
+
+# Copia o .jar gerado na etapa de build
+COPY --from=build /app/target/*.jar app.jar
+
+# Configurações do Spring Boot
+ENV SPRING_PROFILES_ACTIVE=qa
+ENV PORT=8080
+
+# Expõe a porta 8080 (Render detecta automaticamente)
 EXPOSE 8080
 
-# Ativa o profile QA
-ENV SPRING_PROFILES_ACTIVE=qa
-
-ENTRYPOINT ["java","-jar","app.jar"]
-
+# Comando de inicialização
+ENTRYPOINT ["java", "-jar", "app.jar"]
