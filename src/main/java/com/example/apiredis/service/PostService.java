@@ -19,6 +19,10 @@ public class PostService {
     }
 
     public Post save(Post post) {
+        if (post.getNoticia() == null || post.getNoticia().getId() == null || post.getId_user() == null) {
+            throw new IllegalArgumentException("Campos 'noticia.id' e 'id_user' são obrigatórios.");
+        }
+        post.gerarChaveRedis();
         return postRepository.save(post);
     }
 

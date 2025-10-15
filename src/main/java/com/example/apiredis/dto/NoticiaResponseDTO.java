@@ -1,13 +1,12 @@
 package com.example.apiredis.dto;
 
 import com.example.apiredis.model.Noticia;
-import java.util.Date;
 
 public class NoticiaResponseDTO {
 
     private String link;
     private String titulo;
-    private Date data;
+    private String data;
     private String descricao;
     private Long ttlEmSegundos; // tempo de vida no Redis
 
@@ -42,11 +41,11 @@ public class NoticiaResponseDTO {
         this.titulo = titulo;
     }
 
-    public Date getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(String data) {
         this.data = data;
     }
 
