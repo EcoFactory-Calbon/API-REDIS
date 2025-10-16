@@ -2,35 +2,38 @@ package com.example.apiredis.dto;
 
 import com.example.apiredis.model.Noticia;
 
+import java.util.Date;
+
 public class NoticiaResponseDTO {
 
-    private String link;
+    private Long id;
     private String titulo;
-    private String data;
     private String descricao;
-    private Long ttlEmSegundos; // tempo de vida no Redis
+    private String link;
+    private Date data;
+    private Long idHash;
 
-    // Construtor baseado no objeto Model
-    public NoticiaResponseDTO(Noticia noticia) {
-        this.link = noticia.getLink();
-        this.titulo = noticia.getTitulo();
-        this.data = noticia.getData();
-        this.descricao = noticia.getDescricao();
+    public NoticiaResponseDTO() {
     }
 
-    // Construtor completo
-    public NoticiaResponseDTO(Noticia noticia, Long ttlEmSegundos) {
-        this(noticia); // Chama o construtor acima
-        this.ttlEmSegundos = ttlEmSegundos;
-    }
-
-    // Getters e Setters
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
+    public NoticiaResponseDTO(Long id, String titulo, String descricao, String link, Date data, Long idHash) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descricao = descricao;
         this.link = link;
+        this.data = data;
+        this.idHash = idHash;
+    }
+
+    public NoticiaResponseDTO(Noticia noticia) {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitulo() {
@@ -41,14 +44,6 @@ public class NoticiaResponseDTO {
         this.titulo = titulo;
     }
 
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
     public String getDescricao() {
         return descricao;
     }
@@ -57,11 +52,28 @@ public class NoticiaResponseDTO {
         this.descricao = descricao;
     }
 
-    public Long getTtlEmSegundos() {
-        return ttlEmSegundos;
+    public String getLink() {
+        return link;
     }
 
-    public void setTtlEmSegundos(Long ttlEmSegundos) {
-        this.ttlEmSegundos = ttlEmSegundos;
+    public void setLink(String link) {
+        this.link = link;
     }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public Long getIdHash() {
+        return idHash;
+    }
+
+    public void setIdHash(Long idHash) {
+        this.idHash = idHash;
+    }
+
 }

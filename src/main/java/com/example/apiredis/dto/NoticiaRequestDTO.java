@@ -1,52 +1,32 @@
 package com.example.apiredis.dto;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.util.Date;
 
 public class NoticiaRequestDTO {
-    @NotNull(message = "Link da notícia é obrigatório")
-    private String link;
-    @NotNull(message = "Nome da notícia é obrigatório")
+
     private String titulo;
-    private Date data;
     private String descricao;
+    private String link;
+    private Date data;
+    private Long idHash;
 
-    public NoticiaRequestDTO(String link, String titulo, Date data, String descricao) {
-        this.link = link;
+    public NoticiaRequestDTO() {
+    }
+
+    public NoticiaRequestDTO(String titulo, String descricao, String link, Date data, Long idHash) {
         this.titulo = titulo;
-        this.data = data;
         this.descricao = descricao;
-    }
-
-    public NoticiaRequestDTO() {}
-
-    public @NotNull(message = "Link da notícia é obrigatório") String getLink() {
-        return link;
-    }
-
-    public void setLink(@NotNull(message = "Link da notícia é obrigatório") String link) {
         this.link = link;
-    }
-
-    public @NotNull(message = "O titulo da notícia é obrigatório") String getNome() {
-        return titulo;
-    }
-
-    public void setTitulo(@NotNull(message = "O titulo da notícia é obrigatório") String titulo) {
-        this.titulo = titulo;
+        this.data = data;
+        this.idHash = idHash;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getDescricao() {
@@ -57,5 +37,28 @@ public class NoticiaRequestDTO {
         this.descricao = descricao;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public Long getIdHash() {
+        return idHash;
+    }
+
+    public void setIdHash(Long idHash) {
+        this.idHash = idHash;
+    }
 
 }
