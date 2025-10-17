@@ -1,64 +1,50 @@
 package com.example.apiredis.service;
 
+import com.example.apiredis.dto.NoticiaRequestDTO;
+import com.example.apiredis.dto.NoticiaResponseDTO;
 import com.example.apiredis.model.Noticia;
 import com.example.apiredis.repository.NoticiaRepository;
-import com.example.apiredis.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class NoticiaService {
 
     private final NoticiaRepository noticiaRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String NEWS_KEY_PREFIX = "news:";
-
-    @Autowired
-    public NoticiaService(NoticiaRepository noticiaRepository, RedisTemplate<String, Object> redisTemplate) {
+    public NoticiaService(NoticiaRepository noticiaRepository) {
         this.noticiaRepository = noticiaRepository;
-        this.redisTemplate = redisTemplate;
     }
 
-    private String generateRedisKey(String link) {
-        return NEWS_KEY_PREFIX + link;
+    public List<NoticiaResponseDTO> getAllNoticias() {
+        return StreamSupport.stream(noticiaRepository.findAll().spliterator(), false)
+                .map(NoticiaResponseDTO::new)
+                .collect(Collectors.toList());
     }
 
-    public Noticia salvarOuAtualizar(Noticia noticia) {
-        noticia.setId(generateRedisKey(noticia.getLink()));
-
-        return noticiaRepository.save(noticia);
+    public NoticiaResponseDTO getNoticiaById(Long id) {
+        return noticiaRepository.findById(id)
+                .map(NoticiaResponseDTO::new)
+                .orElse(null);
     }
 
+    public NoticiaResponseDTO saveNoticia(NoticiaRequestDTO noticiaRequestDTO) {
+        Noticia noticia = new Noticia();
+        noticia.setTitulo(noticiaRequestDTO.getTitulo());
+        noticia.setDescricao(noticiaRequestDTO.getDescricao());
+        noticia.setLink(noticiaRequestDTO.getLink());
+        noticia.setData(new Date());
+        noticia.setIdHash(noticiaRequestDTO.getIdHash());
 
-    public Noticia buscarPorLink(String link) {
-        String redisKey = generateRedisKey(link);
-
-        return noticiaRepository.findById(redisKey)
-                .orElseThrow(() -> new ResourceNotFoundException("Notícia não encontrada com o link: " + link));
+        Noticia savedNoticia = noticiaRepository.save(noticia);
+        return new NoticiaResponseDTO(savedNoticia);
     }
 
-    public Long getNoticiaTTL(String link) {
-        String redisKey = generateRedisKey(link);
-
-        Long ttl = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
-
-        return (ttl != null) ? ttl : -2L;
-    }
-
-    public Iterable<Noticia> buscarTodas() {
-        return noticiaRepository.findAll();
-    }
-
-    public void deletarPorLink(String link) {
-        String redisKey = generateRedisKey(link);
-
-        if (!noticiaRepository.existsById(redisKey)) {
-            throw new ResourceNotFoundException("Não foi possível deletar. Notícia não encontrada com o link: " + link);
-        }
-        noticiaRepository.deleteById(redisKey);
+    public void deleteNoticia(Long id) {
+        noticiaRepository.deleteById(id);
     }
 }
