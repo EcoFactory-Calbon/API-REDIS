@@ -1,50 +1,47 @@
 package com.example.apiredis.service;
 
-import com.example.apiredis.dto.NoticiaRequestDTO;
-import com.example.apiredis.dto.NoticiaResponseDTO;
 import com.example.apiredis.model.Noticia;
 import com.example.apiredis.repository.NoticiaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class NoticiaService {
 
     private final NoticiaRepository noticiaRepository;
 
+    // Injeção de dependência do Repositório
     public NoticiaService(NoticiaRepository noticiaRepository) {
         this.noticiaRepository = noticiaRepository;
     }
 
-    public List<NoticiaResponseDTO> getAllNoticias() {
-        return StreamSupport.stream(noticiaRepository.findAll().spliterator(), false)
-                .map(NoticiaResponseDTO::new)
-                .collect(Collectors.toList());
+    public Noticia salvarNoticia(Noticia noticia) {
+        return noticiaRepository.save(noticia);
     }
 
-    public NoticiaResponseDTO getNoticiaById(Long id) {
-        return noticiaRepository.findById(id)
-                .map(NoticiaResponseDTO::new)
-                .orElse(null);
+    // Método de Negócio: Buscar Notícia Individual
+    public Noticia buscarPorLink(String link) {
+        return noticiaRepository.findByLink(link);
     }
 
-    public NoticiaResponseDTO saveNoticia(NoticiaRequestDTO noticiaRequestDTO) {
-        Noticia noticia = new Noticia();
-        noticia.setTitulo(noticiaRequestDTO.getTitulo());
-        noticia.setDescricao(noticiaRequestDTO.getDescricao());
-        noticia.setLink(noticiaRequestDTO.getLink());
-        noticia.setData(new Date());
-        noticia.setIdHash(noticiaRequestDTO.getIdHash());
-
-        Noticia savedNoticia = noticiaRepository.save(noticia);
-        return new NoticiaResponseDTO(savedNoticia);
+    // Método de Negócio: Listar Todas
+    public List<Noticia> listarTodas() {
+        return noticiaRepository.findAll();
     }
 
-    public void deleteNoticia(Long id) {
-        noticiaRepository.deleteById(id);
+    // Método de Negócio: Verificar Existência
+    public boolean existePorLink(String link) {
+        return noticiaRepository.existsByLink(link);
+    }
+
+    // Método de Negócio: Remover Notícia
+    public boolean removerPorLink(String link) {
+        return noticiaRepository.deleteByLink(link);
+    }
+
+    // Método de Negócio: Apagar Todas
+    public long apagarTodas() {
+        return noticiaRepository.deleteAll();
     }
 }

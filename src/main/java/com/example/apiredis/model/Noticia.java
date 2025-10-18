@@ -1,71 +1,43 @@
 package com.example.apiredis.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
+import java.io.Serializable;
 
-import java.util.Date;
+public class Noticia implements Serializable {
 
-@RedisHash("news")
-public class Noticia {
-
-    @Id
-    private Long idHash;
-
-    private String link;
-
+    // Campos solicitados
     private String titulo;
+    private String link;
     private String descricao;
-    private Date data;
+    private String data; // Mantendo como String, mas poderia ser LocalDateTime
 
+    // Construtor vazio
     public Noticia() {
     }
 
-    public Noticia(Long idHash,String link, String titulo, String descricao, Date data) {
-        this.idHash = idHash;
-        this.link = link;
+    // Construtor com todos os campos (opcional, para conveniência)
+    public Noticia(String titulo, String link, String descricao, String data) {
         this.titulo = titulo;
+        this.link = link;
         this.descricao = descricao;
         this.data = data;
     }
 
-    public Long getIdHash() {
-        return idHash;
-    }
+    // Getters e Setters
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public void setIdHash(Long idHash) {
-        this.idHash = idHash;
-    }
+    public String getLink() { return link; }
+    public void setLink(String link) { this.link = link; }
 
-    public String getLink() {
-        return link;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public void setLink(String link) {
-        this.link = link;
-    }
+    public String getData() { return data; }
+    public void setData(String data) { this.data = data; }
 
-    public String getTitulo() {
-        return titulo;
+    // Opcional: toString para debug
+    @Override
+    public String toString() {
+        return "Noticia{titulo='" + titulo + "', link='" + link + "'}";
     }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
-    }
-
 }

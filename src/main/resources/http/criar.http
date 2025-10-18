@@ -1,0 +1,11 @@
+POST http://localhost:8080/noticias/criar
+Content-Type: application/json
+
+{
+    "titulo": "Teste",
+    "descricao": "Descrição teste",
+    "link": "https://exemplo.com"
+}
+
+### Listar Noticias
+GET http://localhost:8080/noticias/listar
