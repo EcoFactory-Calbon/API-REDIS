@@ -2,6 +2,7 @@ package com.example.apiredis.controller;
 
 import com.example.apiredis.model.Noticia;
 import com.example.apiredis.service.NoticiaService;
+import openapi.NoticiaOpenApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,23 +12,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/noticias")
-public class NoticiaController {
+public class NoticiaController implements NoticiaOpenApi {
 
-    // O Controller agora depende do Service
     private final NoticiaService service;
 
     public NoticiaController(NoticiaService service) {
         this.service = service;
     }
 
-    // Endpoint: Salvar Notícia
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Noticia saveNoticia(@RequestBody Noticia noticia) {
         return service.salvarNoticia(noticia);
     }
 
-    // Endpoint: Buscar Notícia Individual (por link)
     @GetMapping
     public ResponseEntity<Noticia> getNoticiaByLink(@RequestParam String link) {
         Noticia noticia = service.buscarPorLink(link);
@@ -39,13 +37,11 @@ public class NoticiaController {
         }
     }
 
-    // Endpoint: Listar Todas as Notícias Salvas
     @GetMapping("/listar")
     public List<Noticia> listAllNoticias() {
         return service.listarTodas();
     }
 
-    // Endpoint: Verificar se a Notícia está Salva
     @GetMapping("/existe")
     public ResponseEntity<Map<String, Boolean>> checkExistence(@RequestParam String link) {
         boolean exists = service.existePorLink(link);
@@ -53,7 +49,6 @@ public class NoticiaController {
         return ResponseEntity.ok(Map.of("salva", exists));
     }
 
-    // Endpoint: Remover Notícia Individual (por link)
     @DeleteMapping
     public ResponseEntity<Void> deleteNoticiaByLink(@RequestParam String link) {
         boolean wasDeleted = service.removerPorLink(link);
@@ -65,7 +60,6 @@ public class NoticiaController {
         }
     }
 
-    // Endpoint: Apagar Todas as Notícias Salvas
     @DeleteMapping("/todas")
     public ResponseEntity<Map<String, String>> deleteAllNoticias() {
         long count = service.apagarTodas();
