@@ -4,17 +4,14 @@ import java.io.Serializable;
 
 public class Noticia implements Serializable {
 
-    // Campos solicitados
     private String titulo;
     private String link;
     private String descricao;
-    private String data; // Mantendo como String, mas poderia ser LocalDateTime
+    private String data;
 
-    // Construtor vazio
     public Noticia() {
     }
 
-    // Construtor com todos os campos (opcional, para conveniência)
     public Noticia(String titulo, String link, String descricao, String data) {
         this.titulo = titulo;
         this.link = link;
@@ -22,7 +19,6 @@ public class Noticia implements Serializable {
         this.data = data;
     }
 
-    // Getters e Setters
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
 
@@ -35,9 +31,4 @@ public class Noticia implements Serializable {
     public String getData() { return data; }
     public void setData(String data) { this.data = data; }
 
-    // Opcional: toString para debug
-    @Override
-    public String toString() {
-        return "Noticia{titulo='" + titulo + "', link='" + link + "'}";
-    }
 }

@@ -1,0 +1,27 @@
+package com.example.apiredis.dto;
+
+public class PostRequestDTO {
+
+    private String id_user;
+    private String id_post;
+    private Boolean ativo;
+
+    public String getId_user() {
+        return id_user;
+    }
+    public void setId_user(String id_user) {
+        this.id_user = id_user;
+    }
+    public String getId_post() {
+        return id_post;
+    }
+    public void setId_post(String id_post) {
+        this.id_post = id_post;
+    }
+    public Boolean getAtivo() {
+        return ativo;
+    }
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+}
